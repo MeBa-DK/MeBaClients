@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: meba
+      POSTGRES_PASSWORD: meba
+      POSTGRES_DB: meba_clients
+    ports:
+      - "5433:5432"
+    volumes:
+      - meba_clients_pgdata:/var/lib/postgresql/data
+volumes:
+  meba_clients_pgdata:
