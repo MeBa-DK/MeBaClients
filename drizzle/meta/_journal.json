@@ -8,6 +8,13 @@
       "when": 1788822488994,
       "tag": "0000_workable_blackheart",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788824450960,
+      "tag": "0001_wakeful_karma",
+      "breakpoints": true
     }
   ]
 }

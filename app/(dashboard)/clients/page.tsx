@@ -21,7 +21,7 @@ export default async function ClientsPage() {
     return (
       <div>
         <h1>Clients</h1>
-        <p>No clients yet. Add one to start tracking profitability.</p>
+        <p>No clients. Add one to start.</p>
         {process.env.NODE_ENV !== "production" && <DevPanel />}
       </div>
     );

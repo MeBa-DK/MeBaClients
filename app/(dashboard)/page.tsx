@@ -21,7 +21,7 @@ export default async function PortfolioPage() {
     return (
       <div>
         <h1>Portfolio</h1>
-        <p>No clients yet. Add one to see the portfolio view.</p>
+        <p>No clients. Add one.</p>
       </div>
     );
   }

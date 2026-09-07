@@ -22,7 +22,7 @@ const timestamps = {
 
 export const organizations = pgTable("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  name: text("name").notNull().unique(),
   baseCurrency: text("base_currency").notNull().default("DKK"),
   ...timestamps,
 });

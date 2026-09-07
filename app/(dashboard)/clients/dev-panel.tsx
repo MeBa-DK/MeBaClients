@@ -26,7 +26,7 @@ export function DevPanel() {
 
   return (
     <details style={{ marginTop: "2rem", border: "1px dashed orange", padding: "0.5rem" }}>
-      <summary style={{ color: "orange" }}>Dev panel — quick add client</summary>
+      <summary style={{ color: "orange" }}>Dev panel - add client</summary>
       <form id="dev-add-client" action={handleSubmit}>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <input name="name" placeholder="Client name" required />
