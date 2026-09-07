@@ -17,6 +17,15 @@ export function canTransition(from: RebillStatus, to: RebillStatus): boolean {
   return ALLOWED[from].includes(to);
 }
 
+/**
+ * The legal next states from a given status. UI controls should derive their
+ * options from this rather than hardcoding a second list that can drift from
+ * ALLOWED above.
+ */
+export function legalNextStates(from: RebillStatus): RebillStatus[] {
+  return ALLOWED[from];
+}
+
 export function applyTransition(
   state: RebillState,
   to: RebillStatus,

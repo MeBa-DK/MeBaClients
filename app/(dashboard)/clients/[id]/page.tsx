@@ -8,6 +8,8 @@ import { todayLocal, monthOf } from "@/lib/date";
 import { formatDkk } from "@/lib/money/format";
 import { IncomeForm } from "./income-form";
 import { IncomeRow } from "./income-row";
+import { OutlayForm } from "./outlay-form";
+import { OutlayRow } from "./outlay-row";
 
 export default async function ClientDetailPage({
   params,
@@ -103,17 +105,26 @@ export default async function ClientDetailPage({
             </thead>
             <tbody>
               {outlays.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.date}</td>
-                  <td>{row.vendor}</td>
-                  <td>{row.description}</td>
-                  <td>{formatDkk(row.amountDkk)}</td>
-                  <td>{row.rebillStatus}</td>
-                </tr>
+                <OutlayRow
+                  key={row.id}
+                  clientId={id}
+                  row={{
+                    id: row.id,
+                    date: row.date,
+                    vendor: row.vendor,
+                    description: row.description,
+                    amount: row.amount,
+                    amountDkk: row.amountDkk,
+                    currency: row.currency,
+                    fxRate: row.fxRate,
+                    rebillStatus: row.rebillStatus!,
+                  }}
+                />
               ))}
             </tbody>
           </table>
         )}
+        <OutlayForm clientId={id} />
       </section>
     </div>
   );
