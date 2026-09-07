@@ -6,6 +6,8 @@ import { getDefaultOrgContext } from "@/lib/data/org";
 import { clientMargin } from "@/lib/finance/margin";
 import { todayLocal, monthOf } from "@/lib/date";
 import { formatDkk } from "@/lib/money/format";
+import { IncomeForm } from "./income-form";
+import { IncomeRow } from "./income-row";
 
 export default async function ClientDetailPage({
   params,
@@ -63,16 +65,25 @@ export default async function ClientDetailPage({
             </thead>
             <tbody>
               {income.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.date}</td>
-                  <td>{row.description}</td>
-                  <td>{formatDkk(row.amountDkk)}</td>
-                  <td>{row.status}</td>
-                </tr>
+                <IncomeRow
+                  key={row.id}
+                  clientId={id}
+                  row={{
+                    id: row.id,
+                    date: row.date,
+                    description: row.description,
+                    amount: row.amount,
+                    amountDkk: row.amountDkk,
+                    currency: row.currency,
+                    fxRate: row.fxRate,
+                    status: row.status!,
+                  }}
+                />
               ))}
             </tbody>
           </table>
         )}
+        <IncomeForm clientId={id} />
       </section>
 
       <section>
