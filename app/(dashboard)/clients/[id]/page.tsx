@@ -39,16 +39,20 @@ export default async function ClientDetailPage({
 
       <section>
         <h2>Margin — {month}</h2>
-        <ul>
-          <li>Income settled: {formatDkk(margin.incomeSettled)}</li>
-          <li>Income expected: {formatDkk(margin.incomeExpected)}</li>
-          <li>Outlays internal: {formatDkk(margin.outlaysInternal)}</li>
-          <li>Outlays unrecovered: {formatDkk(margin.outlaysUnrecovered)}</li>
-          <li>Outlays recovered: {formatDkk(margin.outlaysRecovered)}</li>
-          <li>
-            <strong>Margin: {formatDkk(margin.margin)}</strong>
-          </li>
-        </ul>
+        <dl className="summary-card">
+          <dt>Income settled</dt>
+          <dd>{formatDkk(margin.incomeSettled)}</dd>
+          <dt>Income expected</dt>
+          <dd>{formatDkk(margin.incomeExpected)}</dd>
+          <dt>Outlays internal</dt>
+          <dd>{formatDkk(margin.outlaysInternal)}</dd>
+          <dt>Outlays unrecovered</dt>
+          <dd>{formatDkk(margin.outlaysUnrecovered)}</dd>
+          <dt>Outlays recovered</dt>
+          <dd>{formatDkk(margin.outlaysRecovered)}</dd>
+          <dt className="summary-total-label">Margin</dt>
+          <dd className="summary-total-value">{formatDkk(margin.margin)}</dd>
+        </dl>
       </section>
 
       <section>

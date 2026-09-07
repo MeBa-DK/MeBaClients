@@ -21,29 +21,31 @@ export function OutlayForm({ clientId }: { clientId: string }) {
   }
 
   return (
-    <form id="outlay-form" action={handleSubmit}>
+    <div className="add-form">
       <h3>Add outlay</h3>
-      {errors.length > 0 && (
-        <ul style={{ color: "red" }}>
-          {errors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      )}
-      <input name="vendor" placeholder="Vendor" required />
-      <input name="description" placeholder="Description" required />
-      <input name="amount" type="number" placeholder="Amount (øre)" required />
-      <input name="currency" defaultValue="DKK" placeholder="Currency" required />
-      <input name="fxRate" type="number" step="any" defaultValue="1" placeholder="FX rate" required />
-      <input name="date" type="date" required />
-      <select name="rebillStatus" defaultValue="internal">
-        <option value="internal">internal</option>
-        <option value="rebillable">rebillable</option>
-      </select>
-      <button type="submit" disabled={isPending}>
-        {isPending ? "Saving…" : "Add outlay"}
-      </button>
-    </form>
+      <form id="outlay-form" action={handleSubmit}>
+        {errors.length > 0 && (
+          <ul className="form-errors">
+            {errors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
+        <input name="vendor" placeholder="Vendor" required />
+        <input name="description" placeholder="Description" required />
+        <input name="amount" type="number" placeholder="Amount (øre)" required />
+        <input name="currency" defaultValue="DKK" placeholder="Currency" required />
+        <input name="fxRate" type="number" step="any" defaultValue="1" placeholder="FX rate" required />
+        <input name="date" type="date" required />
+        <select name="rebillStatus" defaultValue="internal">
+          <option value="internal">internal</option>
+          <option value="rebillable">rebillable</option>
+        </select>
+        <button type="submit" disabled={isPending}>
+          {isPending ? "Saving…" : "Add outlay"}
+        </button>
+      </form>
+    </div>
   );
 }
 

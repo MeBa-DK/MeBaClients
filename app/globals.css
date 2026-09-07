@@ -61,15 +61,77 @@ section {
   margin-bottom: 1.5rem;
 }
 
-form {
+/* Summary card: label/value pairs, not a bullet list. */
+.summary-card {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.5rem;
+  max-width: 24rem;
+  padding: 1rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.summary-card dt {
+  color: #999;
+}
+
+.summary-card dd {
+  margin: 0;
+  text-align: right;
+}
+
+.summary-card .summary-total-label,
+.summary-card .summary-total-value {
+  color: inherit;
+  font-weight: 700;
+  padding-top: 0.4rem;
+  border-top: 1px solid #333;
+}
+
+/* "Add income" / "Add outlay" forms: boxed off, heading sits above the
+   fields instead of inline with them. */
+.add-form {
+  border: 1px dashed #444;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.add-form h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem;
+}
+
+.add-form form {
   display: flex;
   gap: 0.5rem;
   align-items: center;
   flex-wrap: wrap;
-  margin: 0.5rem 0;
 }
 
-form input,
-form select {
+.add-form input,
+.add-form select {
+  padding: 0.35rem 0.5rem;
+}
+
+.add-form .form-errors {
+  color: #f87171;
+  margin: 0 0 0.5rem;
+  padding-left: 1.2rem;
+  width: 100%;
+}
+
+/* Inline edit forms inside a table row keep the flex-row layout, no box. */
+td form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+td form input,
+td form select {
   padding: 0.35rem 0.5rem;
 }
