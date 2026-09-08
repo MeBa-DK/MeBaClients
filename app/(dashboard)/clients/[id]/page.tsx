@@ -4,6 +4,7 @@ import { listIncomeForClient } from "@/lib/data/income";
 import { listOutlaysForClient } from "@/lib/data/outlays";
 import { getDefaultOrgContext } from "@/lib/data/org";
 import { clientMargin } from "@/lib/finance/margin";
+import { resolveMonthSelection } from "@/lib/finance/month-selection";
 import { todayLocal, monthOf } from "@/lib/date";
 import { formatDkk, formatProfitMarginPercent } from "@/lib/money/format";
 import { IncomeForm } from "./income-form";
@@ -11,8 +12,6 @@ import { IncomeRow } from "./income-row";
 import { OutlayForm } from "./outlay-form";
 import { OutlayRow } from "./outlay-row";
 import { MonthPicker } from "./month-picker";
-
-const MONTH_PATTERN = /^\d{4}-\d{2}$/;
 
 export default async function ClientDetailPage({
   params,
@@ -31,18 +30,14 @@ export default async function ClientDetailPage({
     listIncomeForClient(ctx, id),
     listOutlaysForClient(ctx, id),
   ]);
-  const currentMonth = monthOf(todayLocal());
-  const month =
-    requestedMonth && MONTH_PATTERN.test(requestedMonth) ? requestedMonth : currentMonth;
-
-  // Months with any activity, plus the current month, so the picker always
-  // has somewhere useful to go even before anything's been recorded yet.
-  const monthsWithData = new Set([
-    currentMonth,
-    ...income.map((r) => monthOf(r.date)),
-    ...outlays.map((r) => monthOf(r.date)),
-  ]);
-  const availableMonths = [...monthsWithData].sort().reverse();
+  const { month, availableMonths, hasActivity: hasActivityThisMonth } = resolveMonthSelection(
+    {
+      requestedMonth,
+      currentMonth: monthOf(todayLocal()),
+      recordDates: [...income.map((r) => r.date), ...outlays.map((r) => r.date)],
+    },
+    monthOf,
+  );
 
   const margin = clientMargin(
     id,
@@ -53,9 +48,6 @@ export default async function ClientDetailPage({
   const totalRevenue = margin.incomeSettled + margin.incomeExpected;
   const totalProjectCosts =
     margin.outlaysInternal + margin.outlaysUnrecovered + margin.outlaysRecovered;
-  const hasActivityThisMonth =
-    income.some((r) => monthOf(r.date) === month) ||
-    outlays.some((r) => monthOf(r.date) === month);
 
   return (
     <div>
