@@ -5,7 +5,7 @@ import { listOutlaysForClient } from "@/lib/data/outlays";
 import { getDefaultOrgContext } from "@/lib/data/org";
 import { clientMargin } from "@/lib/finance/margin";
 import { todayLocal, monthOf } from "@/lib/date";
-import { formatDkk } from "@/lib/money/format";
+import { formatDkk, formatProfitMarginPercent } from "@/lib/money/format";
 import { IncomeForm } from "./income-form";
 import { IncomeRow } from "./income-row";
 import { OutlayForm } from "./outlay-form";
@@ -32,26 +32,31 @@ export default async function ClientDetailPage({
     outlays.map((r) => ({ ...r, rebillStatus: r.rebillStatus! })),
     month,
   );
+  const totalRevenue = margin.incomeSettled + margin.incomeExpected;
+  const totalProjectCosts =
+    margin.outlaysInternal + margin.outlaysUnrecovered + margin.outlaysRecovered;
 
   return (
     <div>
       <h1>{client.name}</h1>
 
       <section>
-        <h2>Margin — {month}</h2>
+        <h2>Profitability — {month}</h2>
         <dl className="summary-card">
-          <dt>Income settled</dt>
+          <dt>Revenue received</dt>
           <dd>{formatDkk(margin.incomeSettled)}</dd>
-          <dt>Income expected</dt>
+          <dt>Revenue expected</dt>
           <dd>{formatDkk(margin.incomeExpected)}</dd>
-          <dt>Outlays internal</dt>
-          <dd>{formatDkk(margin.outlaysInternal)}</dd>
-          <dt>Outlays unrecovered</dt>
-          <dd>{formatDkk(margin.outlaysUnrecovered)}</dd>
-          <dt>Outlays recovered</dt>
+          <dt>Project costs</dt>
+          <dd>{formatDkk(totalProjectCosts)}</dd>
+          <dt>Costs recovered</dt>
           <dd>{formatDkk(margin.outlaysRecovered)}</dd>
-          <dt className="summary-total-label">Margin</dt>
+          <dt>Costs to recover</dt>
+          <dd>{formatDkk(margin.outlaysUnrecovered)}</dd>
+          <dt className="summary-total-label">Profit</dt>
           <dd className="summary-total-value">{formatDkk(margin.margin)}</dd>
+          <dt>Profit margin</dt>
+          <dd>{formatProfitMarginPercent(margin.margin, totalRevenue)}</dd>
         </dl>
       </section>
 

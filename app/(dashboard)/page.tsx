@@ -44,9 +44,9 @@ export default async function PortfolioPage() {
         <thead>
           <tr>
             <th>Client</th>
-            <th>Income settled</th>
-            <th>Unrecovered outlays</th>
-            <th>Margin</th>
+            <th>Revenue received</th>
+            <th>Costs to recover</th>
+            <th>Profit</th>
           </tr>
         </thead>
         <tbody>

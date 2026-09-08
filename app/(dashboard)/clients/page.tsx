@@ -34,8 +34,8 @@ export default async function ClientsPage() {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Margin this month</th>
-            <th>Unrecovered outlays</th>
+            <th>Profit this month</th>
+            <th>Costs to recover</th>
           </tr>
         </thead>
         <tbody>
