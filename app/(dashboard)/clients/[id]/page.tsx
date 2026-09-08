@@ -10,13 +10,19 @@ import { IncomeForm } from "./income-form";
 import { IncomeRow } from "./income-row";
 import { OutlayForm } from "./outlay-form";
 import { OutlayRow } from "./outlay-row";
+import { MonthPicker } from "./month-picker";
+
+const MONTH_PATTERN = /^\d{4}-\d{2}$/;
 
 export default async function ClientDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ month?: string }>;
 }) {
   const { id } = await params;
+  const { month: requestedMonth } = await searchParams;
   const ctx = await getDefaultOrgContext();
   const client = await getClient(ctx, id);
   if (!client) notFound();
@@ -25,7 +31,19 @@ export default async function ClientDetailPage({
     listIncomeForClient(ctx, id),
     listOutlaysForClient(ctx, id),
   ]);
-  const month = monthOf(todayLocal());
+  const currentMonth = monthOf(todayLocal());
+  const month =
+    requestedMonth && MONTH_PATTERN.test(requestedMonth) ? requestedMonth : currentMonth;
+
+  // Months with any activity, plus the current month, so the picker always
+  // has somewhere useful to go even before anything's been recorded yet.
+  const monthsWithData = new Set([
+    currentMonth,
+    ...income.map((r) => monthOf(r.date)),
+    ...outlays.map((r) => monthOf(r.date)),
+  ]);
+  const availableMonths = [...monthsWithData].sort().reverse();
+
   const margin = clientMargin(
     id,
     income.map((r) => ({ ...r, status: r.status! })),
@@ -35,13 +53,24 @@ export default async function ClientDetailPage({
   const totalRevenue = margin.incomeSettled + margin.incomeExpected;
   const totalProjectCosts =
     margin.outlaysInternal + margin.outlaysUnrecovered + margin.outlaysRecovered;
+  const hasActivityThisMonth =
+    income.some((r) => monthOf(r.date) === month) ||
+    outlays.some((r) => monthOf(r.date) === month);
 
   return (
     <div>
       <h1>{client.name}</h1>
 
       <section>
-        <h2>Profitability — {month}</h2>
+        <h2>
+          Profitability —{" "}
+          <MonthPicker clientId={id} month={month} availableMonths={availableMonths} />
+        </h2>
+        {!hasActivityThisMonth && (
+          <p className="month-empty-note">
+            No income or outlays recorded for {month} — figures below are all zero.
+          </p>
+        )}
         <dl className="summary-card">
           <dt>Revenue received</dt>
           <dd>{formatDkk(margin.incomeSettled)}</dd>

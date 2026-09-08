@@ -90,6 +90,12 @@ section {
   border-top: 1px solid #333;
 }
 
+.month-empty-note {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
 /* "Add income" / "Add outlay" forms: boxed off, heading sits above the
    fields instead of inline with them. */
 .add-form {
