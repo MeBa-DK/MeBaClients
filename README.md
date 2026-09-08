@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MeBa Clients
 
-## Getting Started
+A dashboard that answers **"which clients make us money?"** — tracking what
+each client pays, what the company fronts on their behalf, and which of
+those fronted costs have actually been paid back.
 
-First, run the development server:
+## Why
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+A spreadsheet will tell you your revenue. It won't tell you the number that
+actually matters day to day: **money you've spent on a client's behalf that
+you haven't gotten back yet.** That's what this tracks.
+
+## Screenshots
+
+**Client detail — revenue, costs, and profit for the month**
+
+![Client detail page](docs/screenshots/client-detail.png)
+
+**Client list — profit and outstanding costs at a glance**
+
+![Clients list](docs/screenshots/clients-list.png)
+
+**Portfolio — every client ranked by profit**
+
+![Portfolio view](docs/screenshots/portfolio.png)
+
+## The model
+
+```
+organizations ──< clients ──< engagements
+                                  │
+                    ┌─────────────┴─────────────┐
+                    │                           │
+                 income                      outlays
+           (what they pay us)         (what we front for them)
+                    │                           │
+              recurring or             rebill status:
+               one-off                 internal | rebillable
+                                              │
+                                       rebilled_at, settled_at
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Every outlay (a cost paid on a client's behalf — Supabase, Vercel, a
+contractor, a domain renewal) carries an explicit **rebill lifecycle**:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **internal** — the company absorbs it, never billed to the client
+- **rebillable** — billed to the client, not yet paid back
+- **rebilled** → **settled** — invoiced, then actually recovered
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`settled` is terminal by design. Reversing a mistake (`rebilled` back to
+`rebillable`) is allowed; nothing can silently un-settle.
 
-## Learn More
+### Terminology on screen
 
-To learn more about Next.js, take a look at the following resources:
+| Shown in the UI  | What it means                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| Revenue received  | Money the client has actually paid                                                   |
+| Revenue expected  | Money invoiced/expected but not yet paid                                             |
+| Project costs      | Total costs incurred on the client's behalf this month                               |
+| Costs recovered    | Project costs the client has paid back                                               |
+| Costs to recover   | Project costs fronted but not yet paid back — the number a spreadsheet won't show you |
+| Profit             | Revenue received, minus internal costs and costs not yet recovered                   |
+| Profit margin      | Profit as a percentage of total revenue (received + expected)                        |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Drizzle ORM** over **Postgres 17** (Docker)
+- **Zod** for input validation at the boundary
+- **Vitest** for tests
+- **Tailwind 4** for base styling
 
-## Deploy on Vercel
+## Getting started
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+docker compose up -d      # start Postgres on localhost:5433
+cp .env.example .env.local
+npm install
+npx drizzle-kit push      # apply the schema
+npm test                  # run the test suite
+npm run dev                # http://localhost:3000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project layout
+
+```
+lib/
+  money/        pure money math — integer minor units (øre), never a float
+  date.ts       local-timezone date helpers (Europe/Copenhagen)
+  db/           Drizzle schema and connection
+  data/         tenant-scoped reads/writes — every query filters by org_id
+  finance/      pure business logic — margin, rebill lifecycle, aging, portfolio
+  validation/   Zod schemas at the input boundary
+app/
+  (dashboard)/  the actual pages — portfolio, clients, client detail
+```
+
+**Money is integer minor units (øre), never a float.** Division by 100
+happens in exactly one place: `lib/money/format.ts`.
+
+**Every data function takes an explicit org context and filters by it.**
+Single-row operations match on `id` AND `org_id` together, never `id` alone
+— a Postgres foreign key proves a row *exists*, not that it belongs to you.
+
+**`lib/finance/` never imports from `lib/db/` or `lib/data/`.** The pure
+business logic (margin math, the rebill state machine) has no idea a
+database exists, which is what makes it fast and simple to test.
+
+## Testing
+
+```bash
+npm test
+```
+
+All business logic — money rounding, date boundaries, the rebill state
+machine, margin calculation, tenant isolation — is covered by tests that run
+against a real Postgres instance, not mocks.
+
+## Status
+
+Solo build, single-user local use — authentication is deliberately deferred
+(the org context is a parameter, not a session). Built from a 14-day plan;
+not everything is done yet (aging, an adversarial security/edge-case pass,
+and loading real data are still ahead).
