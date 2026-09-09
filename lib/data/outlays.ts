@@ -53,13 +53,25 @@ export async function createOutlay(ctx: OrgContext, input: OutlayInput) {
   return row;
 }
 
+/**
+ * General edit (vendor, description, amount, date, ...). Deliberately does
+ * NOT change rebillStatus even if the caller's input carries one — only
+ * transitionOutlay may move an outlay through the rebill lifecycle, so an
+ * edit form can't become a side door around the state machine (which would
+ * also leave rebilledAt/settledAt unset for a status that implies they
+ * should be).
+ */
 export async function updateOutlay(ctx: OrgContext, id: string, input: OutlayInput) {
   await assertOwnedClient(ctx, input.clientId);
+  const existing = await getOutlay(ctx, id);
+  if (!existing) throw new Error(`Outlay ${id} not found`);
+
   const amountDkk = toDkk(input.amount, input.fxRate);
   const [row] = await getDb()
     .update(outlays)
     .set({
       ...input,
+      rebillStatus: existing.rebillStatus,
       fxRate: String(input.fxRate),
       amountDkk,
       updatedAt: new Date(),
