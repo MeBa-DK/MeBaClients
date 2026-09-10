@@ -12,6 +12,7 @@ import { IncomeRow } from "./income-row";
 import { OutlayForm } from "./outlay-form";
 import { OutlayRow } from "./outlay-row";
 import { MonthPicker } from "./month-picker";
+import { ClientHeader } from "./client-header";
 
 export default async function ClientDetailPage({
   params,
@@ -51,7 +52,12 @@ export default async function ClientDetailPage({
 
   return (
     <div>
-      <h1>{client.name}</h1>
+      <ClientHeader
+        clientId={id}
+        name={client.name}
+        notes={client.notes}
+        archived={client.archived}
+      />
 
       <section>
         <h2>

@@ -6,7 +6,6 @@ import { getDefaultOrgContext } from "@/lib/data/org";
 import { clientMargin } from "@/lib/finance/margin";
 import { todayLocal, monthOf } from "@/lib/date";
 import { formatDkk } from "@/lib/money/format";
-import { DevPanel } from "./dev-panel";
 
 export default async function ClientsPage() {
   const ctx = await getDefaultOrgContext();
@@ -21,8 +20,8 @@ export default async function ClientsPage() {
     return (
       <div>
         <h1>Clients</h1>
-        <p>No clients. Add one to start.</p>
-        {process.env.NODE_ENV !== "production" && <DevPanel />}
+        <p>No clients yet.</p>
+        <Link href="/clients/new">Add a client</Link>
       </div>
     );
   }
@@ -30,6 +29,9 @@ export default async function ClientsPage() {
   return (
     <div>
       <h1>Clients</h1>
+      <p>
+        <Link href="/clients/new">Add a client</Link>
+      </p>
       <table>
         <thead>
           <tr>
@@ -58,7 +60,6 @@ export default async function ClientsPage() {
           })}
         </tbody>
       </table>
-      {process.env.NODE_ENV !== "production" && <DevPanel />}
     </div>
   );
 }

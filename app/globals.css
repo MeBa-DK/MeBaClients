@@ -96,6 +96,29 @@ section {
   margin: 0 0 0.5rem;
 }
 
+.archived-badge {
+  color: #999;
+  font-size: 0.85em;
+  font-weight: normal;
+}
+
+.form-errors {
+  color: #f87171;
+  margin: 0 0 0.5rem;
+  padding-left: 1.2rem;
+}
+
+form div {
+  margin-bottom: 0.6rem;
+}
+
+form label {
+  display: block;
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 0.2rem;
+}
+
 /* "Add income" / "Add outlay" forms: boxed off, heading sits above the
    fields instead of inline with them. */
 .add-form {

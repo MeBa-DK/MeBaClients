@@ -43,3 +43,8 @@ export const outlaySchema = z
     ...withFx,
   })
   .superRefine(checkFx);
+
+export const clientSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  notes: z.string().trim().nullable().optional(),
+});

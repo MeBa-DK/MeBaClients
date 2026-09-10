@@ -1,0 +1,1 @@
+ALTER TABLE "clients" ADD COLUMN "archived" boolean DEFAULT false NOT NULL;

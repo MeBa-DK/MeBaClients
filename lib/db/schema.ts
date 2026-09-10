@@ -1,5 +1,5 @@
 import {
-  pgTable, pgEnum, uuid, text, integer, date, timestamp, index,
+  pgTable, pgEnum, uuid, text, integer, date, timestamp, index, boolean,
 } from "drizzle-orm/pg-core";
 
 export const recurringIntervalEnum = pgEnum("recurring_interval", [
@@ -32,6 +32,7 @@ export const clients = pgTable("clients", {
   orgId: uuid("org_id").notNull().references(() => organizations.id),
   name: text("name").notNull(),
   notes: text("notes"),
+  archived: boolean("archived").notNull().default(false),
   ...timestamps,
 }, (t) => [index("clients_org_idx").on(t.orgId)]);
 

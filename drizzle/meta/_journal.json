@@ -15,6 +15,13 @@
       "when": 1788824450960,
       "tag": "0001_wakeful_karma",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789041915000,
+      "tag": "0002_wide_harpoon",
+      "breakpoints": true
     }
   ]
 }
