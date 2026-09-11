@@ -1,166 +1,515 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------
+   Tokens — light palette lives on bare :root; dark redefines the same
+   names under prefers-color-scheme, then again under [data-theme="dark"]
+   so an explicit toggle always wins. Every token declared here first.
+   ------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #dde1e7;
+  --border-strong: #c3c9d3;
+  --text: #1a1f29;
+  --text-muted: #5b6472;
+  --text-faint: #8991a0;
+  --accent: #3452eb;
+  --accent-text: #2540c9;
+  --positive: #157f4a;
+  --negative: #c23b2e;
+  --warning: #b6791a;
+  --focus-ring: #3452eb;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  --radius-sm: 5px;
+  --radius-md: 8px;
+
+  --shadow-card: 0 1px 2px rgba(20, 24, 32, 0.06), 0 1px 1px rgba(20, 24, 32, 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #0e1117;
+    --surface: #161b23;
+    --surface-raised: #1c222c;
+    --border: #2a3140;
+    --border-strong: #3a4356;
+    --text: #e7eaf0;
+    --text-muted: #9aa4b5;
+    --text-faint: #6b7486;
+    --accent: #7b93ff;
+    --accent-text: #9db0ff;
+    --positive: #4fcf8e;
+    --negative: #f2796a;
+    --warning: #f0b04e;
+    --focus-ring: #7b93ff;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: #0e1117;
+  --surface: #161b23;
+  --surface-raised: #1c222c;
+  --border: #2a3140;
+  --border-strong: #3a4356;
+  --text: #e7eaf0;
+  --text-muted: #9aa4b5;
+  --text-faint: #6b7486;
+  --accent: #7b93ff;
+  --accent-text: #9db0ff;
+  --positive: #4fcf8e;
+  --negative: #f2796a;
+  --warning: #f0b04e;
+  --focus-ring: #7b93ff;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+/* ---------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--text);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-4);
+}
+
+h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--space-3);
+}
+
+h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-2);
+}
+
+a {
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+section {
+  margin-bottom: var(--space-6);
+}
+
+.page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.btn-link {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.btn-link:hover {
+  background: color-mix(in srgb, var(--accent) 88%, black);
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------
+   Page shell
+   ------------------------------------------------------------------- */
+.page-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.top-nav .brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-right: var(--space-2);
+}
+
+.top-nav a {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.top-nav a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.top-nav a[aria-current="page"] {
+  color: var(--accent-text);
+}
+
+.page-content {
+  flex: 1;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+/* ---------------------------------------------------------------------
+   Tables — numbers line up, rows breathe, wide content scrolls in place
+   ------------------------------------------------------------------- */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
-  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  background: var(--surface);
 }
 
-th,
-td {
-  padding: 0.5rem 1rem;
+th, td {
+  padding: var(--space-3) var(--space-4);
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
 
 th {
+  font-family: var(--font-display);
   font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--surface);
 }
 
-tfoot td {
-  border-top: 2px solid #999;
+tbody tr:last-child td {
   border-bottom: none;
 }
 
-h1 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+tbody tr:hover td {
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
 }
 
-h2 {
-  font-size: 1.1rem;
-  margin: 1.5rem 0 0.5rem;
+td.num, th.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-section {
-  margin-bottom: 1.5rem;
+tfoot td {
+  border-top: 1px solid var(--border-strong);
+  border-bottom: none;
+  font-weight: 600;
+  background: var(--surface-raised);
 }
 
-/* Summary card: label/value pairs, not a bullet list. */
+/* ---------------------------------------------------------------------
+   Summary card — label/value pairs, one clear total
+   ------------------------------------------------------------------- */
 .summary-card {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.4rem 1.5rem;
-  max-width: 24rem;
-  padding: 1rem;
-  border: 1px solid #333;
-  border-radius: 6px;
-  margin: 0.5rem 0 1.5rem;
+  grid-template-columns: 1fr max-content;
+  gap: var(--space-2) var(--space-6);
+  max-width: 26rem;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  margin: 0 0 var(--space-6);
 }
 
 .summary-card dt {
-  color: #999;
+  color: var(--text-muted);
+  font-size: 0.88rem;
 }
 
 .summary-card dd {
   margin: 0;
   text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .summary-card .summary-total-label,
 .summary-card .summary-total-value {
-  color: inherit;
+  color: var(--text);
   font-weight: 700;
-  padding-top: 0.4rem;
-  border-top: 1px solid #333;
+  font-size: 1.05rem;
+  padding-top: var(--space-3);
+  margin-top: var(--space-1);
+  border-top: 1px solid var(--border-strong);
 }
 
+/* ---------------------------------------------------------------------
+   Status text
+   ------------------------------------------------------------------- */
+.text-positive { color: var(--positive); }
+.text-negative { color: var(--negative); }
+.text-muted { color: var(--text-muted); }
+
 .month-empty-note {
-  color: #999;
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0 0 var(--space-3);
 }
 
 .archived-badge {
-  color: #999;
-  font-size: 0.85em;
-  font-weight: normal;
+  color: var(--text-faint);
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
+.client-header {
+  margin-bottom: var(--space-6);
+}
+
+.client-header h1 {
+  margin-bottom: var(--space-1);
+}
+
+.client-header p {
+  margin: 0 0 var(--space-3);
+  font-size: 0.9rem;
+}
+
+.client-header-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.empty-state {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: var(--space-4) 0;
+}
+
+/* ---------------------------------------------------------------------
+   Forms
+   ------------------------------------------------------------------- */
 .form-errors {
-  color: #f87171;
-  margin: 0 0 0.5rem;
-  padding-left: 1.2rem;
+  color: var(--negative);
+  font-size: 0.85rem;
+  margin: 0 0 var(--space-3);
+  padding-left: 1.1rem;
 }
 
-form div {
-  margin-bottom: 0.6rem;
+form > div {
+  margin-bottom: var(--space-3);
+  max-width: 28rem;
 }
 
 form label {
   display: block;
-  font-size: 0.85rem;
-  color: #999;
-  margin-bottom: 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: var(--space-1);
 }
 
-/* "Add income" / "Add outlay" forms: boxed off, heading sits above the
-   fields instead of inline with them. */
+input, select, textarea, button {
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+input, select, textarea {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+}
+
+form > div input,
+form > div select,
+form > div textarea {
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+  font-family: inherit;
+}
+
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--focus-ring);
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button:hover {
+  background: color-mix(in srgb, var(--accent) 88%, black);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.secondary, button[type="button"] {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-strong);
+}
+
+button.secondary:hover, button[type="button"]:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+form > button,
+form > div + button {
+  margin-right: var(--space-2);
+}
+
+/* "Add income" / "Add outlay" — boxed off, heading sits above the fields
+   instead of running into them. */
 .add-form {
-  border: 1px dashed #444;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin: 0.5rem 0 1.5rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-2) 0 var(--space-6);
 }
 
 .add-form h3 {
-  font-size: 0.95rem;
-  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
 }
 
 .add-form form {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   flex-wrap: wrap;
-}
-
-.add-form input,
-.add-form select {
-  padding: 0.35rem 0.5rem;
 }
 
 .add-form .form-errors {
-  color: #f87171;
-  margin: 0 0 0.5rem;
-  padding-left: 1.2rem;
   width: 100%;
 }
 
-/* Inline edit forms inside a table row keep the flex-row layout, no box. */
+/* Inline edit forms inside a table row keep the flex-row layout, no box */
 td form {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   flex-wrap: wrap;
 }
 
-td form input,
-td form select {
-  padding: 0.35rem 0.5rem;
+/* ---------------------------------------------------------------------
+   Rebill transition controls
+   ------------------------------------------------------------------- */
+.rebill-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.rebill-status {
+  font-weight: 500;
+}
+
+.rebill-transition-btn {
+  background: transparent;
+  color: var(--accent-text);
+  border: 1px solid var(--border-strong);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.rebill-transition-btn:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border-color: var(--accent);
 }

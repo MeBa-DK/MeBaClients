@@ -1,14 +1,32 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const NAV_ITEMS = [
+  { href: "/", label: "Portfolio" },
+  { href: "/clients", label: "Clients" },
+  { href: "/unrecovered", label: "Unrecovered" },
+];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
-    <div>
-      <nav style={{ padding: "1rem", borderBottom: "1px solid #ddd", display: "flex", gap: "1rem" }}>
-        <Link href="/">Portfolio</Link>
-        <Link href="/clients">Clients</Link>
-        <Link href="/unrecovered">Unrecovered</Link>
+    <div className="page-shell">
+      <nav className="top-nav">
+        <span className="brand">MeBa Clients</span>
+        {NAV_ITEMS.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={pathname === item.href ? "page" : undefined}
+          >
+            {item.label}
+          </Link>
+        ))}
       </nav>
-      <main style={{ padding: "1rem" }}>{children}</main>
+      <main className="page-content">{children}</main>
     </div>
   );
 }

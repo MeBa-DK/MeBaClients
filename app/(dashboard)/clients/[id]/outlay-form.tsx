@@ -63,16 +63,17 @@ export function OutlayRebillControl({
   const options = legalNextStates(currentStatus);
 
   if (options.length === 0) {
-    return <span>{currentStatus} (final)</span>;
+    return <span className="rebill-status">{currentStatus} (final)</span>;
   }
 
   return (
-    <span>
-      {currentStatus}{" "}
+    <span className="rebill-actions">
+      <span className="rebill-status">{currentStatus}</span>
       {options.map((next) => (
         <button
           key={next}
           type="button"
+          className="rebill-transition-btn"
           disabled={isPending}
           onClick={() => {
             startTransition(async () => {
@@ -85,7 +86,7 @@ export function OutlayRebillControl({
           → {next}
         </button>
       ))}
-      {error && <span style={{ color: "red" }}> {error}</span>}
+      {error && <span className="text-negative">{error}</span>}
     </span>
   );
 }
@@ -127,7 +128,7 @@ export function OutlayEditForm({
   return (
     <form action={handleSubmit}>
       {errors.length > 0 && (
-        <ul style={{ color: "red" }}>
+        <ul className="form-errors">
           {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}

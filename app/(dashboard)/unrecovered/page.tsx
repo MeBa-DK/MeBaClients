@@ -30,7 +30,7 @@ export default async function UnrecoveredPage() {
     return (
       <div>
         <h1>Unrecovered outlays</h1>
-        <p>Nothing fronted and unrecovered right now.</p>
+        <p className="empty-state">Nothing fronted and unrecovered right now.</p>
       </div>
     );
   }
@@ -59,30 +59,32 @@ export default async function UnrecoveredPage() {
         return (
           <section key={key}>
             <h2>{BUCKET_LABELS[key]}</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Vendor</th>
-                  <th>Amount</th>
-                  <th>Rebill status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bucket.outlays.map((outlay) => (
-                  <tr key={outlay.id}>
-                    <td>
-                      <Link href={`/clients/${outlay.clientId}`}>
-                        {clientNames.get(outlay.clientId) ?? "Unknown client"}
-                      </Link>
-                    </td>
-                    <td>{outlay.vendor}</td>
-                    <td>{formatDkk(outlay.amountDkk)}</td>
-                    <td>{outlay.rebillStatus}</td>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Vendor</th>
+                    <th className="num">Amount</th>
+                    <th>Rebill status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {bucket.outlays.map((outlay) => (
+                    <tr key={outlay.id}>
+                      <td>
+                        <Link href={`/clients/${outlay.clientId}`}>
+                          {clientNames.get(outlay.clientId) ?? "Unknown client"}
+                        </Link>
+                      </td>
+                      <td>{outlay.vendor}</td>
+                      <td className="num">{formatDkk(outlay.amountDkk)}</td>
+                      <td>{outlay.rebillStatus}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
         );
       })}

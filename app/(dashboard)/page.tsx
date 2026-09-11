@@ -21,7 +21,9 @@ export default async function PortfolioPage() {
     return (
       <div>
         <h1>Portfolio</h1>
-        <p>No clients. Add one.</p>
+        <p className="empty-state">
+          No clients yet. <Link href="/clients/new">Add one</Link> to see the portfolio.
+        </p>
       </div>
     );
   }
@@ -40,43 +42,42 @@ export default async function PortfolioPage() {
   return (
     <div>
       <h1>Portfolio — {month}</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Client</th>
-            <th>Revenue received</th>
-            <th>Costs to recover</th>
-            <th>Profit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.clientId}
-              style={row.margin < 0 ? { color: "red" } : undefined}
-            >
-              <td>
-                <Link href={`/clients/${row.clientId}`}>{row.clientName}</Link>
-              </td>
-              <td>{formatDkk(row.incomeSettled)}</td>
-              <td>{formatDkk(row.outlaysUnrecovered)}</td>
-              <td>{formatDkk(row.margin)}</td>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th className="num">Revenue received</th>
+              <th className="num">Costs to recover</th>
+              <th className="num">Profit</th>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td>
-              <strong>Total</strong>
-            </td>
-            <td>{formatDkk(totalIncome)}</td>
-            <td>{formatDkk(totalUnrecovered)}</td>
-            <td>
-              <strong>{formatDkk(totalMargin)}</strong>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.clientId}>
+                <td>
+                  <Link href={`/clients/${row.clientId}`}>{row.clientName}</Link>
+                </td>
+                <td className="num">{formatDkk(row.incomeSettled)}</td>
+                <td className="num">{formatDkk(row.outlaysUnrecovered)}</td>
+                <td className={`num ${row.margin < 0 ? "text-negative" : ""}`}>
+                  {formatDkk(row.margin)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td className="num">{formatDkk(totalIncome)}</td>
+              <td className="num">{formatDkk(totalUnrecovered)}</td>
+              <td className={`num ${totalMargin < 0 ? "text-negative" : ""}`}>
+                {formatDkk(totalMargin)}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 }

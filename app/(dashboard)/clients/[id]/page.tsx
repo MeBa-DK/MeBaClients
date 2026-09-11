@@ -90,36 +90,38 @@ export default async function ClientDetailPage({
       <section>
         <h2>Income</h2>
         {income.length === 0 ? (
-          <p>No income recorded yet.</p>
+          <p className="empty-state">No income recorded yet.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {income.map((row) => (
-                <IncomeRow
-                  key={row.id}
-                  clientId={id}
-                  row={{
-                    id: row.id,
-                    date: row.date,
-                    description: row.description,
-                    amount: row.amount,
-                    amountDkk: row.amountDkk,
-                    currency: row.currency,
-                    fxRate: row.fxRate,
-                    status: row.status!,
-                  }}
-                />
-              ))}
-            </tbody>
-          </table>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th className="num">Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {income.map((row) => (
+                  <IncomeRow
+                    key={row.id}
+                    clientId={id}
+                    row={{
+                      id: row.id,
+                      date: row.date,
+                      description: row.description,
+                      amount: row.amount,
+                      amountDkk: row.amountDkk,
+                      currency: row.currency,
+                      fxRate: row.fxRate,
+                      status: row.status!,
+                    }}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
         <IncomeForm clientId={id} />
       </section>
@@ -127,38 +129,40 @@ export default async function ClientDetailPage({
       <section>
         <h2>Outlays</h2>
         {outlays.length === 0 ? (
-          <p>No outlays recorded yet.</p>
+          <p className="empty-state">No outlays recorded yet.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Vendor</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Rebill status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {outlays.map((row) => (
-                <OutlayRow
-                  key={row.id}
-                  clientId={id}
-                  row={{
-                    id: row.id,
-                    date: row.date,
-                    vendor: row.vendor,
-                    description: row.description,
-                    amount: row.amount,
-                    amountDkk: row.amountDkk,
-                    currency: row.currency,
-                    fxRate: row.fxRate,
-                    rebillStatus: row.rebillStatus!,
-                  }}
-                />
-              ))}
-            </tbody>
-          </table>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Vendor</th>
+                  <th>Description</th>
+                  <th className="num">Amount</th>
+                  <th>Rebill status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {outlays.map((row) => (
+                  <OutlayRow
+                    key={row.id}
+                    clientId={id}
+                    row={{
+                      id: row.id,
+                      date: row.date,
+                      vendor: row.vendor,
+                      description: row.description,
+                      amount: row.amount,
+                      amountDkk: row.amountDkk,
+                      currency: row.currency,
+                      fxRate: row.fxRate,
+                      rebillStatus: row.rebillStatus!,
+                    }}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
         <OutlayForm clientId={id} />
       </section>

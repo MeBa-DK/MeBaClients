@@ -44,7 +44,7 @@ export function IncomeRow({ clientId, row }: { clientId: string; row: IncomeRowD
     <tr>
       <td>{row.date}</td>
       <td>{row.description}</td>
-      <td>{formatDkk(row.amountDkk)}</td>
+      <td className="num">{formatDkk(row.amountDkk)}</td>
       <td>
         <IncomeStatusControl clientId={clientId} incomeId={row.id} currentStatus={row.status} />
         <button type="button" onClick={() => setEditing(true)}>

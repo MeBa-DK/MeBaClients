@@ -48,7 +48,7 @@ export function OutlayRow({ clientId, row }: { clientId: string; row: OutlayRowD
       <td>{row.date}</td>
       <td>{row.vendor}</td>
       <td>{row.description}</td>
-      <td>{formatDkk(row.amountDkk)}</td>
+      <td className="num">{formatDkk(row.amountDkk)}</td>
       <td>
         <OutlayRebillControl
           clientId={clientId}

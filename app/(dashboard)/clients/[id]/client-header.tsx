@@ -67,18 +67,20 @@ export function ClientHeader({
   }
 
   return (
-    <div>
+    <div className="client-header">
       <h1>
         {name}
         {archived && <span className="archived-badge"> (archived)</span>}
       </h1>
-      {notes && <p>{notes}</p>}
-      <button type="button" onClick={() => setEditing(true)}>
-        Edit
-      </button>
-      <button type="button" onClick={handleArchiveToggle} disabled={isPending}>
-        {isPending ? "Working…" : archived ? "Unarchive" : "Archive"}
-      </button>
+      {notes && <p className="text-muted">{notes}</p>}
+      <div className="client-header-actions">
+        <button type="button" onClick={() => setEditing(true)}>
+          Edit
+        </button>
+        <button type="button" onClick={handleArchiveToggle} disabled={isPending}>
+          {isPending ? "Working…" : archived ? "Unarchive" : "Archive"}
+        </button>
+      </div>
     </div>
   );
 }

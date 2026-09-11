@@ -119,7 +119,7 @@ export function IncomeEditForm({
   return (
     <form action={handleSubmit}>
       {errors.length > 0 && (
-        <ul style={{ color: "red" }}>
+        <ul className="form-errors">
           {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}
