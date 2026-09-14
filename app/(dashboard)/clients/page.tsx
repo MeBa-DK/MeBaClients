@@ -20,7 +20,7 @@ export default async function ClientsPage() {
     return (
       <div>
         <h1>Clients</h1>
-        <p className="empty-state">
+        <p className="empty-state-page">
           No clients yet. <Link href="/clients/new">Add one to start tracking profitability</Link>.
         </p>
       </div>

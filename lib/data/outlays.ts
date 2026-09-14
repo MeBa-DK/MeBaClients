@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { outlays } from "@/lib/db/schema";
 import { toDkk } from "@/lib/money";
@@ -23,11 +23,16 @@ export async function listOutlaysForClient(ctx: OrgContext, clientId: string) {
   return getDb()
     .select()
     .from(outlays)
-    .where(and(eq(outlays.orgId, ctx.orgId), eq(outlays.clientId, clientId)));
+    .where(and(eq(outlays.orgId, ctx.orgId), eq(outlays.clientId, clientId)))
+    .orderBy(asc(outlays.date));
 }
 
 export async function listOutlays(ctx: OrgContext) {
-  return getDb().select().from(outlays).where(eq(outlays.orgId, ctx.orgId));
+  return getDb()
+    .select()
+    .from(outlays)
+    .where(eq(outlays.orgId, ctx.orgId))
+    .orderBy(asc(outlays.date));
 }
 
 export async function getOutlay(ctx: OrgContext, id: string) {

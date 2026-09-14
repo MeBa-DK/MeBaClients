@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import type { OrgContext } from "./context";
@@ -14,7 +14,7 @@ export async function listClients(ctx: OrgContext, options?: { includeArchived?:
   const where = options?.includeArchived
     ? eq(clients.orgId, ctx.orgId)
     : and(eq(clients.orgId, ctx.orgId), eq(clients.archived, false));
-  return getDb().select().from(clients).where(where);
+  return getDb().select().from(clients).where(where).orderBy(asc(clients.name));
 }
 
 export async function getClient(ctx: OrgContext, id: string) {

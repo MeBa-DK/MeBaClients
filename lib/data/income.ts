@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { income } from "@/lib/db/schema";
 import { toDkk } from "@/lib/money";
@@ -21,11 +21,16 @@ export async function listIncomeForClient(ctx: OrgContext, clientId: string) {
   return getDb()
     .select()
     .from(income)
-    .where(and(eq(income.orgId, ctx.orgId), eq(income.clientId, clientId)));
+    .where(and(eq(income.orgId, ctx.orgId), eq(income.clientId, clientId)))
+    .orderBy(asc(income.date));
 }
 
 export async function listIncome(ctx: OrgContext) {
-  return getDb().select().from(income).where(eq(income.orgId, ctx.orgId));
+  return getDb()
+    .select()
+    .from(income)
+    .where(eq(income.orgId, ctx.orgId))
+    .orderBy(asc(income.date));
 }
 
 export async function createIncome(ctx: OrgContext, input: IncomeInput) {

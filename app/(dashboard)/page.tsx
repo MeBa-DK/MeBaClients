@@ -21,8 +21,8 @@ export default async function PortfolioPage() {
     return (
       <div>
         <h1>Portfolio</h1>
-        <p className="empty-state">
-          No clients yet. <Link href="/clients/new">Add one</Link> to see the portfolio.
+        <p className="empty-state-page">
+          No clients yet. <Link href="/clients/new">Add a client</Link> to see the portfolio.
         </p>
       </div>
     );

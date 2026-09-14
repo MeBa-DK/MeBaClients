@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 export function MonthPicker({
@@ -12,20 +13,30 @@ export function MonthPicker({
   availableMonths: string[];
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   return (
-    <select
-      aria-label="Month"
-      value={month}
-      onChange={(event) => {
-        router.push(`/clients/${clientId}?month=${event.target.value}`);
-      }}
-    >
-      {availableMonths.map((m) => (
-        <option key={m} value={m}>
-          {m}
-        </option>
-      ))}
-    </select>
+    <span className="month-picker">
+      <select
+        aria-label="Month"
+        value={month}
+        disabled={isPending}
+        onChange={(event) => {
+          const nextMonth = event.target.value;
+          startTransition(() => {
+            router.push(`/clients/${clientId}?month=${nextMonth}`);
+          });
+        }}
+      >
+        {availableMonths.map((m) => (
+          <option key={m} value={m}>
+            {m}
+          </option>
+        ))}
+      </select>
+      {isPending && (
+        <span className="month-picker-spinner" role="status" aria-label="Loading" />
+      )}
+    </span>
   );
 }

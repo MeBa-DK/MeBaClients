@@ -30,7 +30,9 @@ export default async function UnrecoveredPage() {
     return (
       <div>
         <h1>Unrecovered outlays</h1>
-        <p className="empty-state">Nothing fronted and unrecovered right now.</p>
+        <p className="empty-state-page">
+          Nothing fronted and unrecovered right now — every rebillable outlay has been paid back.
+        </p>
       </div>
     );
   }
