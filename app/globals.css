@@ -187,7 +187,8 @@ section {
 .top-nav {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
   padding: var(--space-4) var(--space-6);
   border-bottom: 1px solid var(--border);
   background: var(--surface);
@@ -200,6 +201,7 @@ section {
   color: var(--text);
   letter-spacing: -0.01em;
   margin-right: var(--space-2);
+  white-space: nowrap;
 }
 
 .top-nav a {
@@ -576,4 +578,74 @@ td form {
 .rebill-transition-btn:hover {
   background: color-mix(in srgb, var(--accent) 10%, var(--surface));
   border-color: var(--accent);
+}
+
+/* ---------------------------------------------------------------------
+   Mobile (phone-width) — 640px covers common phone viewports including
+   375px. Page-level layout only; .table-wrap's own overflow-x already
+   keeps wide tables from forcing the page itself to scroll sideways.
+   ------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .top-nav {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .page-content {
+    padding: var(--space-4);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .btn-link {
+    text-align: center;
+  }
+
+  /* Label/value pairs stack instead of squeezing into two narrow columns —
+     "Revenue received" etc. was wrapping mid-label at 375px. */
+  .summary-card {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+    max-width: none;
+  }
+
+  .summary-card dd {
+    text-align: left;
+    margin-bottom: var(--space-2);
+  }
+
+  .summary-card .summary-total-label,
+  .summary-card .summary-total-value {
+    margin-top: 0;
+  }
+
+  /* Add-income/add-outlay: group related fields two-per-row instead of
+     each field wrapping to its own full-width line. */
+  .add-form form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .add-form input[name="description"],
+  .add-form input[name="vendor"],
+  .add-form input[type="date"],
+  .add-form button[type="submit"] {
+    grid-column: 1 / -1;
+  }
+
+  .add-form input,
+  .add-form select {
+    width: 100%;
+    flex: none;
+  }
+
+  /* A visible scroll hint on touch devices, since the thin native
+     scrollbar thumb is easy to miss until a table is actually touched. */
+  .table-wrap {
+    box-shadow: inset -8px 0 6px -6px color-mix(in srgb, var(--text) 12%, transparent);
+  }
 }
