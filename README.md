@@ -118,7 +118,14 @@ against a real Postgres instance, not mocks.
 
 ## Status
 
+Feature-complete against its 14-day build plan: aging, an adversarial
+security pass (cross-tenant isolation, money/date edge cases,
+concurrency-safe rebill transitions), real client CRUD, a design pass,
+mobile responsiveness, CSV export, recurring-income visibility, and a WCAG
+AA accessibility pass are all done and tested. Populated with realistic
+mock client data (real MeBa figures aren't available yet).
+
 Solo build, single-user local use — authentication is deliberately deferred
-(the org context is a parameter, not a session). Built from a 14-day plan;
-not everything is done yet (aging, an adversarial security/edge-case pass,
-and loading real data are still ahead).
+(the org context is a parameter, not a session). See
+[docs/plans/2026-09-25-day14-buffer-and-next-steps.md](docs/plans/2026-09-25-day14-buffer-and-next-steps.md)
+for the current decision on auth and deployment.
