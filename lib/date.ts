@@ -30,3 +30,26 @@ export function daysBetween(from: string, to: string): number {
   const toMs = Date.parse(`${to}T12:00:00Z`);
   return Math.round((toMs - fromMs) / (24 * 60 * 60 * 1000));
 }
+
+/**
+ * Every YYYY-MM month from `from` (inclusive) through `to` (inclusive),
+ * ascending. `from` and `to` may be full dates or already-truncated months
+ * — only the YYYY-MM prefix is used.
+ */
+export function monthsBetween(from: string, to: string): string[] {
+  const [fromYear, fromMonth] = monthOf(from).split("-").map(Number);
+  const [toYear, toMonth] = monthOf(to).split("-").map(Number);
+
+  const months: string[] = [];
+  let year = fromYear;
+  let month = fromMonth;
+  while (year < toYear || (year === toYear && month <= toMonth)) {
+    months.push(`${year}-${String(month).padStart(2, "0")}`);
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+  }
+  return months;
+}

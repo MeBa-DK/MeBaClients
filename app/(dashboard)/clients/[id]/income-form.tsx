@@ -44,6 +44,12 @@ export function IncomeForm({ clientId }: { clientId: string }) {
             </option>
           ))}
         </select>
+        <select name="recurringInterval" defaultValue="" aria-label="Recurring interval">
+          <option value="">One-off</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="yearly">Yearly</option>
+        </select>
         <button type="submit" disabled={isPending}>
           {isPending ? "Saving…" : "Add income"}
         </button>
@@ -98,6 +104,7 @@ export function IncomeEditForm({
     fxRate: string;
     date: string;
     status: (typeof STATUSES)[number];
+    recurringInterval: "monthly" | "quarterly" | "yearly" | null;
   };
   onDone: () => void;
 }) {
@@ -136,6 +143,16 @@ export function IncomeEditForm({
             {status}
           </option>
         ))}
+      </select>
+      <select
+        name="recurringInterval"
+        defaultValue={initial.recurringInterval ?? ""}
+        aria-label="Recurring interval"
+      >
+        <option value="">One-off</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+        <option value="yearly">Yearly</option>
       </select>
       <button type="submit" disabled={isPending}>
         {isPending ? "Saving…" : "Save"}

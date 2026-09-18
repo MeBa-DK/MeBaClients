@@ -13,6 +13,7 @@ type IncomeRowData = {
   currency: string;
   fxRate: string;
   status: "expected" | "invoiced" | "settled" | "written_off";
+  recurringInterval: "monthly" | "quarterly" | "yearly" | null;
 };
 
 export function IncomeRow({ clientId, row }: { clientId: string; row: IncomeRowData }) {
@@ -32,6 +33,7 @@ export function IncomeRow({ clientId, row }: { clientId: string; row: IncomeRowD
               fxRate: row.fxRate,
               date: row.date,
               status: row.status,
+              recurringInterval: row.recurringInterval,
             }}
             onDone={() => setEditing(false)}
           />
@@ -43,7 +45,15 @@ export function IncomeRow({ clientId, row }: { clientId: string; row: IncomeRowD
   return (
     <tr>
       <td>{row.date}</td>
-      <td>{row.description}</td>
+      <td>
+        {row.description}
+        {row.recurringInterval && (
+          <span className="recurring-badge" title={`Recurs ${row.recurringInterval}`}>
+            {" "}
+            ↻ {row.recurringInterval}
+          </span>
+        )}
+      </td>
       <td className="num">{formatDkk(row.amountDkk)}</td>
       <td>
         <IncomeStatusControl clientId={clientId} incomeId={row.id} currentStatus={row.status} />

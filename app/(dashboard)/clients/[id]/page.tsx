@@ -5,6 +5,7 @@ import { listOutlaysForClient } from "@/lib/data/outlays";
 import { getDefaultOrgContext } from "@/lib/data/org";
 import { clientMargin } from "@/lib/finance/margin";
 import { resolveMonthSelection } from "@/lib/finance/month-selection";
+import { unpaidRecurringMonths } from "@/lib/finance/recurring";
 import { todayLocal, monthOf } from "@/lib/date";
 import { formatDkk, formatProfitMarginPercent } from "@/lib/money/format";
 import { IncomeForm } from "./income-form";
@@ -49,6 +50,22 @@ export default async function ClientDetailPage({
   const totalRevenue = margin.incomeSettled + margin.incomeExpected;
   const totalProjectCosts =
     margin.outlaysInternal + margin.outlaysUnrecovered + margin.outlaysRecovered;
+
+  const recurringRows = income
+    .filter((r) => r.recurringInterval)
+    .map((r) => ({
+      id: r.id,
+      clientId: id,
+      description: r.description,
+      recurringInterval: r.recurringInterval,
+      date: r.date,
+    }));
+  const monthsWithIncome = new Set(income.map((r) => monthOf(r.date)));
+  const unpaidMonths = unpaidRecurringMonths(
+    recurringRows,
+    new Map([[id, monthsWithIncome]]),
+    todayLocal(),
+  );
 
   return (
     <div>
@@ -116,6 +133,7 @@ export default async function ClientDetailPage({
                       currency: row.currency,
                       fxRate: row.fxRate,
                       status: row.status!,
+                      recurringInterval: row.recurringInterval,
                     }}
                   />
                 ))}
@@ -125,6 +143,30 @@ export default async function ClientDetailPage({
         )}
         <IncomeForm clientId={id} />
       </section>
+
+      {unpaidMonths.length > 0 && (
+        <section>
+          <h2>Unpaid recurring months</h2>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Retainer</th>
+                </tr>
+              </thead>
+              <tbody>
+                {unpaidMonths.map((u) => (
+                  <tr key={`${u.incomeId}-${u.month}`}>
+                    <td>{u.month}</td>
+                    <td>{u.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section>
         <h2>Outlays</h2>

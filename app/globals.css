@@ -368,6 +368,13 @@ tfoot td {
   letter-spacing: 0.03em;
 }
 
+.recurring-badge {
+  color: var(--accent-text);
+  font-size: 0.8em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .client-header {
   margin-bottom: var(--space-6);
 }
