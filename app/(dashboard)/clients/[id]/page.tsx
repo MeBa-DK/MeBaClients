@@ -102,6 +102,9 @@ export default async function ClientDetailPage({
           <dt>Profit margin</dt>
           <dd>{formatProfitMarginPercent(margin.margin, totalRevenue)}</dd>
         </dl>
+        <a href={`/clients/${id}/export?month=${month}`} className="btn-link">
+          Export {month} as CSV
+        </a>
       </section>
 
       <section>
