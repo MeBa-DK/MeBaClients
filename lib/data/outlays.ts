@@ -90,6 +90,16 @@ export async function updateOutlay(ctx: OrgContext, id: string, input: OutlayInp
 /**
  * The state machine (lib/finance/rebill.ts) decides legality; this only
  * persists the result. An illegal transition throws before any write happens.
+ *
+ * The UPDATE is conditioned on rebillStatus still matching what we just
+ * read (an optimistic-concurrency check), not just on id/orgId. Without it,
+ * two concurrent transitions starting from the same row (e.g. two tabs, or
+ * two requests that both read before either wrote) can each independently
+ * compute a legal-looking next state and both "succeed", with the second
+ * write silently clobbering the first — landing the row in a state that was
+ * never actually validated against what was truly current. If the row
+ * moved between our read and our write, zero rows match and we throw
+ * rather than overwrite; the caller re-fetches and retries.
  */
 export async function transitionOutlay(ctx: OrgContext, id: string, to: RebillStatus) {
   const row = await getOutlay(ctx, id);
@@ -108,8 +118,18 @@ export async function transitionOutlay(ctx: OrgContext, id: string, to: RebillSt
   const [updated] = await getDb()
     .update(outlays)
     .set({ ...next, updatedAt: new Date() })
-    .where(and(eq(outlays.orgId, ctx.orgId), eq(outlays.id, id)))
+    .where(
+      and(
+        eq(outlays.orgId, ctx.orgId),
+        eq(outlays.id, id),
+        eq(outlays.rebillStatus, row.rebillStatus),
+      ),
+    )
     .returning();
-  if (!updated) throw new Error(`Outlay ${id} not found`);
+  if (!updated) {
+    throw new Error(
+      `Outlay ${id} changed before this transition could be applied — reload and try again`,
+    );
+  }
   return updated;
 }

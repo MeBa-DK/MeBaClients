@@ -3,6 +3,13 @@ import { z } from "zod";
 const minorUnits = z.number().int();
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "must be YYYY-MM-DD");
 
+// Generous caps on free-text fields — not a technical limit (Postgres text
+// is unbounded) but a sanity limit. A vendor name or description in the
+// tens of thousands of characters is never legitimate input and renders as
+// one unbroken line across a table that scrolls sideways forever.
+const shortText = (label: string) => z.string().trim().min(1, `${label} is required`).max(200);
+const longText = (label: string) => z.string().trim().min(1, `${label} is required`).max(2000);
+
 const withFx = {
   amount: minorUnits,
   currency: z.string().regex(/^[A-Z]{3}$/),
@@ -22,7 +29,7 @@ export const incomeSchema = z
   .object({
     clientId: z.string().uuid(),
     engagementId: z.string().uuid().nullable().optional(),
-    description: z.string().min(1),
+    description: longText("Description"),
     date: isoDate,
     recurringInterval: z.enum(["monthly", "quarterly", "yearly"]).nullable().optional(),
     status: z.enum(["expected", "invoiced", "settled", "written_off"]).default("expected"),
@@ -34,8 +41,8 @@ export const outlaySchema = z
   .object({
     clientId: z.string().uuid(),
     engagementId: z.string().uuid().nullable().optional(),
-    vendor: z.string().min(1),
-    description: z.string().min(1),
+    vendor: shortText("Vendor"),
+    description: longText("Description"),
     date: isoDate,
     rebillStatus: z
       .enum(["internal", "rebillable", "rebilled", "settled"])
@@ -45,6 +52,6 @@ export const outlaySchema = z
   .superRefine(checkFx);
 
 export const clientSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  notes: z.string().trim().nullable().optional(),
+  name: shortText("Name"),
+  notes: longText("Notes").nullable().optional(),
 });
