@@ -39,9 +39,9 @@ export function ClientHeader({
   if (editing) {
     return (
       <div>
-        <form action={handleSave}>
+        <form action={handleSave} aria-label={`Edit ${name}`}>
           {errors.length > 0 && (
-            <ul className="form-errors">
+            <ul className="form-errors" role="alert">
               {errors.map((error) => (
                 <li key={error}>{error}</li>
               ))}
@@ -74,10 +74,15 @@ export function ClientHeader({
       </h1>
       {notes && <p className="text-muted">{notes}</p>}
       <div className="client-header-actions">
-        <button type="button" onClick={() => setEditing(true)}>
+        <button type="button" onClick={() => setEditing(true)} aria-label={`Edit ${name}`}>
           Edit
         </button>
-        <button type="button" onClick={handleArchiveToggle} disabled={isPending}>
+        <button
+          type="button"
+          onClick={handleArchiveToggle}
+          disabled={isPending}
+          aria-label={`${archived ? "Unarchive" : "Archive"} ${name}`}
+        >
           {isPending ? "Working…" : archived ? "Unarchive" : "Archive"}
         </button>
       </div>

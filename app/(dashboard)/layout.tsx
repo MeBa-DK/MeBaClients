@@ -14,7 +14,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="page-shell">
-      <nav className="top-nav">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      <nav className="top-nav" aria-label="Main">
         <span className="brand">MeBa Clients</span>
         {NAV_ITEMS.map((item) => (
           <Link
@@ -26,7 +29,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Link>
         ))}
       </nav>
-      <main className="page-content">{children}</main>
+      <main id="main-content" className="page-content">
+        {children}
+      </main>
     </div>
   );
 }

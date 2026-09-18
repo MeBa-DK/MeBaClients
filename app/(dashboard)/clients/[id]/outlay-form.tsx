@@ -25,19 +25,33 @@ export function OutlayForm({ clientId }: { clientId: string }) {
       <h3>Add outlay</h3>
       <form id="outlay-form" action={handleSubmit}>
         {errors.length > 0 && (
-          <ul className="form-errors">
+          <ul className="form-errors" role="alert">
             {errors.map((error) => (
               <li key={error}>{error}</li>
             ))}
           </ul>
         )}
-        <input name="vendor" placeholder="Vendor" required />
-        <input name="description" placeholder="Description" required />
-        <input name="amount" type="number" placeholder="Amount (øre)" required />
-        <input name="currency" defaultValue="DKK" placeholder="Currency" required />
-        <input name="fxRate" type="number" step="any" defaultValue="1" placeholder="FX rate" required />
-        <input name="date" type="date" required />
-        <select name="rebillStatus" defaultValue="internal">
+        <input name="vendor" placeholder="Vendor" aria-label="Vendor" required />
+        <input name="description" placeholder="Description" aria-label="Description" required />
+        <input
+          name="amount"
+          type="number"
+          placeholder="Amount (øre)"
+          aria-label="Amount in øre"
+          required
+        />
+        <input name="currency" defaultValue="DKK" placeholder="Currency" aria-label="Currency" required />
+        <input
+          name="fxRate"
+          type="number"
+          step="any"
+          defaultValue="1"
+          placeholder="FX rate"
+          aria-label="FX rate"
+          required
+        />
+        <input name="date" type="date" aria-label="Date" required />
+        <select name="rebillStatus" defaultValue="internal" aria-label="Rebill status">
           <option value="internal">internal</option>
           <option value="rebillable">rebillable</option>
         </select>
@@ -53,17 +67,24 @@ export function OutlayRebillControl({
   clientId,
   outlayId,
   currentStatus,
+  vendor,
 }: {
   clientId: string;
   outlayId: string;
   currentStatus: RebillStatus;
+  vendor: string;
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const options = legalNextStates(currentStatus);
 
   if (options.length === 0) {
-    return <span className="rebill-status">{currentStatus} (final)</span>;
+    return (
+      <span className="rebill-status">
+        {currentStatus} (final)
+        <span className="sr-only"> — {vendor} outlay, no further transitions</span>
+      </span>
+    );
   }
 
   return (
@@ -75,6 +96,7 @@ export function OutlayRebillControl({
           type="button"
           className="rebill-transition-btn"
           disabled={isPending}
+          aria-label={`Move ${vendor} outlay from ${currentStatus} to ${next}`}
           onClick={() => {
             startTransition(async () => {
               const result = await transitionOutlayAction(clientId, outlayId, next);
@@ -86,7 +108,11 @@ export function OutlayRebillControl({
           → {next}
         </button>
       ))}
-      {error && <span className="text-negative">{error}</span>}
+      {error && (
+        <span className="text-negative" role="alert">
+          {error}
+        </span>
+      )}
     </span>
   );
 }
@@ -126,20 +152,38 @@ export function OutlayEditForm({
   }
 
   return (
-    <form action={handleSubmit}>
+    <form action={handleSubmit} aria-label={`Edit ${initial.vendor} outlay`}>
       {errors.length > 0 && (
-        <ul className="form-errors">
+        <ul className="form-errors" role="alert">
           {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}
         </ul>
       )}
-      <input name="vendor" defaultValue={initial.vendor} required />
-      <input name="description" defaultValue={initial.description} required />
-      <input name="amount" type="number" defaultValue={initial.amount} required />
-      <input name="currency" defaultValue={initial.currency} required />
-      <input name="fxRate" type="number" step="any" defaultValue={initial.fxRate} required />
-      <input name="date" type="date" defaultValue={initial.date} required />
+      <input name="vendor" defaultValue={initial.vendor} aria-label="Vendor" required />
+      <input
+        name="description"
+        defaultValue={initial.description}
+        aria-label="Description"
+        required
+      />
+      <input
+        name="amount"
+        type="number"
+        defaultValue={initial.amount}
+        aria-label="Amount in øre"
+        required
+      />
+      <input name="currency" defaultValue={initial.currency} aria-label="Currency" required />
+      <input
+        name="fxRate"
+        type="number"
+        step="any"
+        defaultValue={initial.fxRate}
+        aria-label="FX rate"
+        required
+      />
+      <input name="date" type="date" defaultValue={initial.date} aria-label="Date" required />
       <input type="hidden" name="rebillStatus" value={initial.rebillStatus} />
       <button type="submit" disabled={isPending}>
         {isPending ? "Saving…" : "Save"}

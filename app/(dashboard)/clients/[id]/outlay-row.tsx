@@ -54,8 +54,9 @@ export function OutlayRow({ clientId, row }: { clientId: string; row: OutlayRowD
           clientId={clientId}
           outlayId={row.id}
           currentStatus={row.rebillStatus}
+          vendor={row.vendor}
         />
-        <button type="button" onClick={() => setEditing(true)}>
+        <button type="button" onClick={() => setEditing(true)} aria-label={`Edit ${row.vendor} outlay`}>
           Edit
         </button>
       </td>

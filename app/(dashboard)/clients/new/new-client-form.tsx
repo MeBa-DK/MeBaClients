@@ -21,7 +21,7 @@ export function NewClientForm() {
   return (
     <form action={handleSubmit}>
       {errors.length > 0 && (
-        <ul className="form-errors">
+        <ul className="form-errors" role="alert">
           {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}

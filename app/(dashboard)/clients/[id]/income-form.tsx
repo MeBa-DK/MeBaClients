@@ -26,18 +26,32 @@ export function IncomeForm({ clientId }: { clientId: string }) {
       <h3>Add income</h3>
       <form id="income-form" action={handleSubmit}>
         {errors.length > 0 && (
-          <ul className="form-errors">
+          <ul className="form-errors" role="alert">
             {errors.map((error) => (
               <li key={error}>{error}</li>
             ))}
           </ul>
         )}
-        <input name="description" placeholder="Description" required />
-        <input name="amount" type="number" placeholder="Amount (øre)" required />
-        <input name="currency" defaultValue="DKK" placeholder="Currency" required />
-        <input name="fxRate" type="number" step="any" defaultValue="1" placeholder="FX rate" required />
-        <input name="date" type="date" required />
-        <select name="status" defaultValue="expected">
+        <input name="description" placeholder="Description" aria-label="Description" required />
+        <input
+          name="amount"
+          type="number"
+          placeholder="Amount (øre)"
+          aria-label="Amount in øre"
+          required
+        />
+        <input name="currency" defaultValue="DKK" placeholder="Currency" aria-label="Currency" required />
+        <input
+          name="fxRate"
+          type="number"
+          step="any"
+          defaultValue="1"
+          placeholder="FX rate"
+          aria-label="FX rate"
+          required
+        />
+        <input name="date" type="date" aria-label="Date" required />
+        <select name="status" defaultValue="expected" aria-label="Status">
           {STATUSES.map((status) => (
             <option key={status} value={status}>
               {status}
@@ -62,10 +76,12 @@ export function IncomeStatusControl({
   clientId,
   incomeId,
   currentStatus,
+  description,
 }: {
   clientId: string;
   incomeId: string;
   currentStatus: (typeof STATUSES)[number];
+  description: string;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -73,6 +89,7 @@ export function IncomeStatusControl({
     <select
       value={currentStatus}
       disabled={isPending}
+      aria-label={`Status for ${description}`}
       onChange={(event) => {
         const next = event.target.value as (typeof STATUSES)[number];
         startTransition(async () => {
@@ -124,20 +141,38 @@ export function IncomeEditForm({
   }
 
   return (
-    <form action={handleSubmit}>
+    <form action={handleSubmit} aria-label={`Edit ${initial.description}`}>
       {errors.length > 0 && (
-        <ul className="form-errors">
+        <ul className="form-errors" role="alert">
           {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}
         </ul>
       )}
-      <input name="description" defaultValue={initial.description} required />
-      <input name="amount" type="number" defaultValue={initial.amount} required />
-      <input name="currency" defaultValue={initial.currency} required />
-      <input name="fxRate" type="number" step="any" defaultValue={initial.fxRate} required />
-      <input name="date" type="date" defaultValue={initial.date} required />
-      <select name="status" defaultValue={initial.status}>
+      <input
+        name="description"
+        defaultValue={initial.description}
+        aria-label="Description"
+        required
+      />
+      <input
+        name="amount"
+        type="number"
+        defaultValue={initial.amount}
+        aria-label="Amount in øre"
+        required
+      />
+      <input name="currency" defaultValue={initial.currency} aria-label="Currency" required />
+      <input
+        name="fxRate"
+        type="number"
+        step="any"
+        defaultValue={initial.fxRate}
+        aria-label="FX rate"
+        required
+      />
+      <input name="date" type="date" defaultValue={initial.date} aria-label="Date" required />
+      <select name="status" defaultValue={initial.status} aria-label="Status">
         {STATUSES.map((status) => (
           <option key={status} value={status}>
             {status}

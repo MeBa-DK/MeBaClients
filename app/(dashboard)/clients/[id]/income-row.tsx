@@ -56,8 +56,17 @@ export function IncomeRow({ clientId, row }: { clientId: string; row: IncomeRowD
       </td>
       <td className="num">{formatDkk(row.amountDkk)}</td>
       <td>
-        <IncomeStatusControl clientId={clientId} incomeId={row.id} currentStatus={row.status} />
-        <button type="button" onClick={() => setEditing(true)}>
+        <IncomeStatusControl
+          clientId={clientId}
+          incomeId={row.id}
+          currentStatus={row.status}
+          description={row.description}
+        />
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          aria-label={`Edit ${row.description}`}
+        >
           Edit
         </button>
       </td>
